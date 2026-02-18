@@ -16,11 +16,9 @@ class RoleController extends Controller
     public function index()
     {
         $roles = Role::with('positions')->get();
-        // Encrypt data sebelum kirim ke client
-        $encryptedData = $this->encryptKDMPData($roles);
         return response()->json([
             'success' => true,
-            'data' => $encryptedData,
+            'data' => $this->encryptKDMPData($roles),
         ]);
     }
     public function testDecrypt(Request $request)

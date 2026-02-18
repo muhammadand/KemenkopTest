@@ -12,16 +12,62 @@ class ProvinceController extends Controller
     /**
      * List semua provinsi
      */
-    public function index()
+    public function index(Request $request)
     {
-        $province = Province::orderBy('id')->get();
-        $encryptedData = $this->encryptKDMPData($province);
-    
+        // =========================
+        // 1. Pagination
+        // =========================
+        $pageSize = $request->input('page_size', 10);
+        if ($pageSize < 1 || $pageSize > 100) {
+            $pageSize = 10;
+        }
+
+        $page = $request->input('page', 1);
+        if ($page < 1) {
+            $page = 1;
+        }
+
+        // =========================
+        // 2. Query Province
+        // =========================
+        $query = Province::query();
+
+        // =========================
+        // 3. Search
+        // =========================
+        $search = $request->input('search', '');
+        $trimSearch = trim($search);
+
+        if ($trimSearch !== '') {
+            $query->where('name', 'ILIKE', '%' . $trimSearch . '%');
+        }
+        $provinces = $query
+            ->orderBy('id', 'asc')
+            ->paginate($pageSize, ['*'], 'page', $page);
+        if ($provinces->isEmpty()) {
+            return response()->json([
+                'message' => 'Tidak ada data provinsi yang ditemukan.',
+                'data' => $this->encryptKDMPData([]),
+                'pagination' => [
+                    'current_page' => $provinces->currentPage(),
+                    'last_page' => $provinces->lastPage(),
+                    'page_size' => $provinces->perPage(),
+                    'total' => $provinces->total(),
+                ],
+            ], 200);
+        }
         return response()->json([
-            'success' => true,
-            'data' => $encryptedData
-        ]);
+            'message' => 'Daftar provinsi berhasil diambil.',
+            'data' => $this->encryptKDMPData($provinces->items()),
+            'pagination' => [
+                'current_page' => $provinces->currentPage(),
+                'last_page' => $provinces->lastPage(),
+                'page_size' => $provinces->perPage(),
+                'total' => $provinces->total(),
+            ],
+        ], 200);
     }
+
 
     /**
      * Show satu provinsi
@@ -29,8 +75,6 @@ class ProvinceController extends Controller
     public function show($id)
     {
         $province = Province::find($id);
-        $encryptedData = $this->encryptKDMPData($province);
-
         if (!$province) {
             return response()->json([
                 'success' => false,
@@ -40,10 +84,9 @@ class ProvinceController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $encryptedData
+            'data' => $this->encryptKDMPData($province)
         ]);
     }
-
     /**
      * Create provinsi baru
      */
@@ -55,12 +98,11 @@ class ProvinceController extends Controller
         ]);
 
         $province = Province::create($validated);
-        $encryptedData = $this->encryptKDMPData($province);
 
         return response()->json([
             'success' => true,
             'message' => 'Provinsi berhasil dibuat',
-            'data' => $encryptedData
+            'data' => $this->encryptKDMPData($province)
         ], 201);
     }
 
@@ -90,13 +132,10 @@ class ProvinceController extends Controller
 
         $province->update($validated);
 
-        // Enkripsi data setelah update
-        $encryptedData = $this->encryptKDMPData($province);
-
         return response()->json([
             'success' => true,
             'message' => 'Provinsi berhasil diperbarui',
-            'data' => $encryptedData
+            'data' => $this->encryptKDMPData($province)
         ]);
     }
 

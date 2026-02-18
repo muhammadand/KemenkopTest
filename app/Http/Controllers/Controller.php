@@ -22,7 +22,6 @@ abstract class Controller extends BaseController
         if (is_array($data) || is_object($data)) {
             $data = json_encode($data);
         }
-
         $key = hash('sha256', $sharedKey, true);
         return openssl_encrypt($data, 'AES-256-CBC', $key, 0, $sharedKeyIV);
     }
@@ -34,10 +33,8 @@ abstract class Controller extends BaseController
     {
         $sharedKey = env('KDMP_SECRET_KEY');
         $sharedKeyIV = env('KDMP_SECRET_KEY_IV');
-
         $key = hash('sha256', $sharedKey, true);
         $decrypted = openssl_decrypt($data, 'AES-256-CBC', $key, 0, $sharedKeyIV);
-
         return $type === 'json' ? json_decode($decrypted, true) : $decrypted;
     }
 }

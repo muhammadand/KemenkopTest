@@ -15,13 +15,11 @@ class RolePositionController extends Controller
     public function index()
     {
         $positions = RolePosition::with('role')->get();
-        $encryptedData = $this->encryptKDMPData($positions);
         return response()->json([
             'success' => true,
-            'data' => $encryptedData
+            'data' => $this->encryptKDMPData($positions)
         ]);
     }
-
     /**
      * Detail role position
      */
@@ -34,11 +32,9 @@ class RolePositionController extends Controller
                 'message' => 'Role position tidak ditemukan'
             ], 404);
         }
-        $encryptedData = $this->encryptKDMPData($position);
-
         return response()->json([
             'success' => true,
-            'data' => $encryptedData
+            'data' => $this->encryptKDMPData($position)
         ]);
     }
 
@@ -51,14 +47,11 @@ class RolePositionController extends Controller
             'position' => 'required|string|max:100|unique:role_positions,position',
             'role_id' => 'required|exists:roles,id',
         ]);
-
         $position = RolePosition::create($validated);
-        $encryptedData = $this->encryptKDMPData($position);
-
         return response()->json([
             'success' => true,
             'message' => 'Role position berhasil dibuat',
-            'data' => $encryptedData
+            'data' => $this->encryptKDMPData($position)
         ], 201);
     }
 
@@ -83,15 +76,13 @@ class RolePositionController extends Controller
         ]);
 
         $position->update($validated);
-        $encryptedData = $this->encryptKDMPData($position);
 
         return response()->json([
             'success' => true,
             'message' => 'Role position berhasil diupdate',
-            'data' => $encryptedData
+            'data' => $this->encryptKDMPData($position)
         ]);
     }
-
     /**
      * Hapus role position
      */

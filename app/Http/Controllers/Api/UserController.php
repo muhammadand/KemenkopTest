@@ -15,10 +15,9 @@ class UserController extends Controller
     public function index()
     {
         $users = User::with(['roles.positions'])->get();
-        $encryptedData = $this->encryptKDMPData($users);
         return response()->json([
             'success' => true,
-            'data' => $encryptedData
+            'data' => $this->encryptKDMPData($users)
         ]);
     }
 
@@ -26,11 +25,10 @@ class UserController extends Controller
     public function show($id)
     {
         $users = User::with(['roles.positions'])->findOrFail($id);
-        $encryptedData = $this->encryptKDMPData($users);
 
         return response()->json([
             'success' => true,
-            'data' => $encryptedData
+            'data' => $this->encryptKDMPData($users)
         ]);
     }
     // POST /users
@@ -49,7 +47,7 @@ class UserController extends Controller
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
         ]);
-        $encryptedData = $this->encryptKDMPData($user);
+    
 
         if (!empty($validated['roles'])) {
             $user->roles()->sync($validated['roles']);
@@ -60,7 +58,7 @@ class UserController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'User created',
-            'data' => $encryptedData
+            'data' => $this->encryptKDMPData($user)
         ], 201);
     }
 
@@ -75,8 +73,6 @@ class UserController extends Controller
             'password' => 'sometimes|min:6',
             'roles' => 'sometimes|array',
         ]);
-          $encryptedData = $this->encryptKDMPData($user);
-
         if (isset($validated['name'])) $user->name = $validated['name'];
         if (isset($validated['email'])) $user->email = $validated['email'];
         if (isset($validated['password'])) $user->password = Hash::make($validated['password']);
@@ -90,7 +86,7 @@ class UserController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'User updated',
-            'data' => $encryptedData
+            'data' => $this->encryptKDMPData($user)
         ]);
     }
 
