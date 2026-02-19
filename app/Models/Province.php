@@ -4,26 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class Province extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasUuids;
 
-    // Nama table
     protected $table = 'provinces';
 
-    // Primary key manual
-    protected $primaryKey = 'id';
-    public $incrementing = false; // karena id manual
-    protected $keyType = 'integer';
+    protected $primaryKey = 'province_id';
 
-    // Mass assignable
+    public $incrementing = false;   // UUID bukan auto increment
+    protected $keyType = 'string';  // UUID adalah string
+
     protected $fillable = [
- 
         'name',
         'code',
     ];
-
-    // Soft delete column
-    protected $dates = ['deleted_at'];
 }

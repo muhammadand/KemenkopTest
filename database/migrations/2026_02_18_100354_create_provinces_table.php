@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('provinces', function (Blueprint $table) {
-            $table->id(); // Auto-increment PK
-            $table->string('name', 100);
-            $table->string('code', 50)->unique();
+            $table->uuid('province_id')->primary();
+            $table->string('name', 50);
+            $table->string('code', 50);
             $table->timestamps();
-            $table->softDeletes(); // deleted_at
+            $table->softDeletes();
         });
     }
 

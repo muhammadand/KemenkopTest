@@ -44,11 +44,10 @@ class RoleController extends Controller
                 'message' => 'Role tidak ditemukan'
             ], 404);
         }
-         $encryptedData = $this->encryptKDMPData($role);
 
         return response()->json([
             'success' => true,
-            'data' =>  $encryptedData
+            'data' =>  $this->encryptKDMPData($role)
         ]);
     }
 
@@ -60,16 +59,14 @@ class RoleController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:100|unique:roles,name',
         ]);
-
         $role = Role::create([
             'name' => $validated['name'],
             'slug' => Str::slug($validated['name']),
         ]);
-        $encryptedData = $this->encryptKDMPData($role);
         return response()->json([
             'success' => true,
             'message' => 'Role berhasil dibuat',
-            'data' => $encryptedData
+            'data' => $this->encryptKDMPData($role)
         ], 201);
     }
 
@@ -96,14 +93,10 @@ class RoleController extends Controller
             'name' => $validated['name'],
             'slug' => Str::slug($validated['name']),
         ]);
-
-        // Encrypt data sebelum dikembalikan
-        $encryptedData = $this->encryptKDMPData($role);
-
         return response()->json([
             'success' => true,
             'message' => 'Role berhasil diupdate',
-            'data' => $encryptedData
+            'data' => $this->encryptKDMPData($role)
         ]);
     }
 
@@ -115,13 +108,11 @@ class RoleController extends Controller
         $role = Role::find($id);
         if (!$role) {
             return response()->json([
-                'success' => true, // tetap sukses, tapi datanya terencrypt
+                'success' => true,
                 'data' => $this->encryptKDMPData(['message' => 'Role tidak ditemukan'])
             ], 404);
         }
-
         $role->delete();
-
         return response()->json([
             'success' => true,
             'data' => $this->encryptKDMPData(['message' => 'Role berhasil dihapus'])

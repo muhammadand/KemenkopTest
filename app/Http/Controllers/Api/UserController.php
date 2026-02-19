@@ -96,7 +96,6 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->roles()->detach(); // detach roles from pivot
         $user->delete();
-
         return response()->json([
             'success' => true,
             'message' => 'User deleted'

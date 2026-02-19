@@ -61,7 +61,6 @@ class RolePositionController extends Controller
     public function update(Request $request, $id)
     {
         $position = RolePosition::find($id);
-   
         if (!$position) {
             return response()->json([
                 'success' => false,
