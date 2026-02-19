@@ -13,19 +13,17 @@ class RoleController extends Controller
     /**
      * List semua role
      */
-    public function index()
-    {
-        $roles = Role::with('positions')->get();
+    public function index(){
+        $roles=Role::with('positions')->get();
         return response()->json([
-            'success' => true,
-            'data' => $this->encryptKDMPData($roles),
+            'succes'=>true,
+            'data'=>$this->encryptKDMPData($roles)
         ]);
     }
     public function testDecrypt(Request $request)
     {
-        $encrypted = $request->input('data'); // string terenkripsi
-        $decrypted = $this->decryptKDMPData($encrypted, 'json'); // kembalikan sebagai array
-
+        $encrypted = $request->input('data'); 
+        $decrypted = $this->decryptKDMPData($encrypted, 'json'); 
         return response()->json([
             'success' => true,
             'data' => $decrypted

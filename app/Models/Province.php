@@ -8,17 +8,21 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class Province extends Model
 {
-    use SoftDeletes, HasUuids;
+    use  HasUuids;
 
     protected $table = 'provinces';
 
     protected $primaryKey = 'province_id';
-
-    public $incrementing = false;   // UUID bukan auto increment
-    protected $keyType = 'string';  // UUID adalah string
-
+    public $incrementing = false;
+    protected $keyType = 'string';                                                                              
     protected $fillable = [
         'name',
         'code',
     ];
+      public function news()
+    {
+        return $this->hasMany(
+            News::class,    
+        );
+    }
 }

@@ -17,15 +17,11 @@ class AuthController extends Controller
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6|confirmed',
         ]);
-
-        // Buat user baru
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
         ]);
-
-        // Return JSON sukses tanpa token
         return response()->json([
             'success' => true,
             'message' => 'Register berhasil',

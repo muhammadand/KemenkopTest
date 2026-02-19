@@ -38,7 +38,7 @@ class UserController extends Controller
             'name' => 'required|string|max:100',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
-            'roles' => 'array', // optional: array of role IDs
+            'roles' => 'array', 
         ]);
 
         $user = User::create([

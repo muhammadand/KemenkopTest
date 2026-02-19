@@ -16,14 +16,10 @@ class ProvinceController extends Controller
     {
         $pageSize = (int) $request->input('page_size', 10);
         $pageSize = ($pageSize >= 1 && $pageSize <= 100) ? $pageSize : 10;
-
         $page = (int) $request->input('page', 1);
         $page = $page >= 1 ? $page : 1;
-
         $query = Province::query();
-
         $search = trim($request->input('search', ''));
-
         if ($search !== '') {
             $query->where('name', 'ILIKE', '%' . $search . '%');
         }
@@ -37,6 +33,7 @@ class ProvinceController extends Controller
                 ? 'Tidak ada data provinsi yang ditemukan.'
                 : 'Daftar provinsi berhasil diambil.',
             'data' => $this->encryptKDMPData($provinces->items()),
+            'data' => $provinces,
             'pagination' => [
                 'current_page' => $provinces->currentPage(),
                 'last_page' => $provinces->lastPage(),

@@ -37,7 +37,6 @@ class RolePositionController extends Controller
             'data' => $this->encryptKDMPData($position)
         ]);
     }
-
     /**
      * Buat role position baru
      */

@@ -33,11 +33,11 @@ class AllowRole
             $positions = $role->positions->pluck('position')->map(fn($p) => strtoupper($p))->toArray();
 
             // Role harus ada di allowedRoles **dan** posisi minimal satu cocok
-            return in_array($roleName, $allowedRoles) && count(array_intersect($positions, $allowedRoles)) > 0;
+            return in_array($roleName, $allowedRoles)&& count(array_intersect($positions, $allowedRoles)) > 0;
         });
 
         if (!$hasAccess) {
-            return response()->json(['message' => 'Forbidden'], 403);
+            return response()->json(['message' => 'Anda Tidak Memiliki Akses'], 403);
         }
 
         return $next($request);
